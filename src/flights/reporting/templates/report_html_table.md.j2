@@ -1,0 +1,39 @@
+# Flights Report ✈️
+{% for trip in trips %}
+- <details><summary>{{ trip.route }}</summary>
+
+<table border="1" cellspacing="0" cellpadding="4">
+<thead>
+<tr>
+  <th>IDX</th>
+  <th>TOTAL_PRICE</th>
+  <th>NIGHTS</th>
+  <th>FROM → TO</th>
+  <th>DATE</th>
+  <th>PRICE</th>
+  <th>TO → FROM</th>
+  <th>DATE</th>
+  <th>PRICE</th>
+  <th>LINKS</th>
+</tr>
+</thead>
+<tbody>
+{% for row in trip.df.itertuples() %}
+<tr>
+  <td>{{ loop.index0 }}</td>
+  <td>{{ row.price|int }}</td>
+  <td>{{ row.nights }}</td>
+  <td>{{ row.src_dst_outb.replace("_", " > ") }}</td>
+  <td>{{ row.date_outb_fmt }}</td>
+  <td>{{ row.price_outb|int }}</td>
+  <td>{{ row.src_dst_inb.replace("_", " > ") }}</td>
+  <td>{{ row.date_inb_fmt }}</td>
+  <td>{{ row.price_inb|int }}</td>
+  <td>{{ row.links }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</details>
+{% endfor %}

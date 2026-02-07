@@ -1,0 +1,17 @@
+srcs:
+- [ GHV, OTP ] # these 2 airports are close to home, so we can use them interchangeably as source
+dsts:
+- [ DTM, CGN ] # we can use any of these airports for our vacation destination 
+- PFO
+# for the above config, we have 2 trips: 
+# 1. any combination of outbound flight GHV>DTM / OTP>DTM / GHV>CGN / OTP>CGN  + return flight DTM>GHV / DTM>OTP / CGN>GHV / GCN>OTP (16 combinations in total) 
+# 2. any combination of GHV>PFO / OTP>PFO and their return flights (4 total)
+nights_stay: [ 1, 8 ] # vacation duration between 1 and 8 nights
+min_hours_stay: 20 # if we consider a 1 day vacation, make sure we have at least 20 hours between arrival and return
+dates_range: [ '2025-11-07', '2025-12-31' ]
+min_hour_depart:
+  # minimum departure hour for each source airport (in local time of that airport)
+  GHV: '10:00'
+  OTP: '10:00'
+  '*': '08:00' # for any other airport, we want to depart after 8am
+order_by: [ 'nights', 'price' ] # for each trip, sort the results by nights_stay first, then by price

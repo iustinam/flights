@@ -1,0 +1,14 @@
+{
+    "srcs": [
+        [ "GHV", "OTP" ]
+    ],
+    "dsts": [
+        [ "DTM", "CGN", "HHN" ],
+        [ "PFO" ]
+    ],
+    "min_hours_stay": 20,
+    "nights_stay": [1, 1],
+    "dates_range": ["2025-11-07", "2025-12-31"],
+    "min_hour_depart": {"OTP": "10:00", "GHV": "10:00"},
+    "order_by": ["nights", "price"]
+}
