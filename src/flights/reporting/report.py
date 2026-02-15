@@ -8,8 +8,6 @@ import datetime as dt
 from jinja2 import Environment, FileSystemLoader
 import logging
 
-import pdb
-
 from flights.config import DATA_DIR
 from .config import CONFIG, AIRPORTS, REPORT_FILE_TPL, TEMPLATE_DIR, TEMPLATE_FILE, TRIP_URL, parse_config
 
@@ -30,13 +28,14 @@ def load_data() -> pd.DataFrame:
 
     # some operators don't provide the departure hour:minute in the list api response
     df_all["has_departure_time"] = ~df_all["date"].str.endswith("00:00")
+
     df_all["date"] = pd.to_datetime(df_all["date"], errors="coerce")
 
     return df_all
 
 
 def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
-    """ Apply filters to the flights data based on the configuration: select only flights within the specified date range and filter out departures that are too early (eg. before 08:00)"""
+    """ Apply filters to the flights data """
 
     df = df.copy()
 
@@ -68,10 +67,11 @@ def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str]
     logger.debug("%s → %s", trip_from, trip_to)
 
     # Get all possible outbound and inbound routes for a trip by doing a Cartesian product between the departure and arrival airports
-    # eg. ["GHV_DTM", "GHV_CGN", "GHV_HHN", "OTP_DTM", "OTP_CGN", "OTP_HHN"]
+    # trip_from = ["GHV", "OTP"], trip_to = ["DTM", "CGN", "HHN"]
+    # outbound_routes: ["GHV_DTM", "GHV_CGN", "GHV_HHN", "OTP_DTM", "OTP_CGN", "OTP_HHN"]
+    # inbound_routes: ["DTM_GHV", "CGN_GHV", "HHN_GHV", "DTM_OTP", "CGN_OTP", "HHN_OTP"]
     outbound_routes = [f"{src}_{dst}" for src, dst in
                        itertools.product(trip_from, trip_to)]
-    # eg. ["DTM_GHV", "CGN_GHV", "HHN_GHV", "DTM_OTP", "CGN_OTP", "HHN_OTP"]
     inbound_routes = [f"{src}_{dst}" for src, dst in
                       itertools.product(trip_to, trip_from)]
 
@@ -87,6 +87,7 @@ def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str]
 
     outb_ext = outb.merge(nights_df, how="cross")
     outb_ext["join_date"] = (
+        # drop the time part to keep only the date for the merge
         outb_ext["date"].dt.normalize()
         + pd.to_timedelta(outb_ext["nights"], unit="D")
     )
