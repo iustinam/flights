@@ -4,10 +4,8 @@ import os
 import pandas as pd
 
 from flights.config import PROJECT_ROOT
-from flights.crawlers.rair.config import CONFIG as RAIR_CONFIG
 
 CONFIG = {
-    # 'src_dst_pairs': RAIR_CONFIG['src_dst_pairs'],  # todo fix
     'max_price': 1000,
     'min_hours_stay': 20,
     'nights_stay': [1, 1],

@@ -45,4 +45,5 @@ DBG = 0
 CONFIG = {
     'days_to_query': range(7, 1*30, 30),  # 1 month
     'src_dst_pairs': src_dst_pairs,
+    'src_dsts': src_dsts,
 }
