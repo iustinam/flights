@@ -33,7 +33,7 @@ def get_srcs_dsts_from_crawlers_configs(operators: list) -> dict:
     crawler_configs = []
     for operator in operators:
         crawler_configs.append(importlib.import_module(
-            f"flights.crawlers.{operator}.crawl").CONFIG)
+            f"flights.crawlers.{operator}").CONFIG)
 
     for config in crawler_configs:
         for comb in config["src_dsts"]:

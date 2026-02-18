@@ -45,7 +45,7 @@ def main() -> None:
     # Run the appropriate module based on the command (and operator if present), pass the merged configuration
     if args.command == "crawl":
         module = importlib.import_module(
-            f"flights.crawlers.{args.operator}.crawl")
+            f"flights.crawlers.{args.operator}")
     elif args.command == "report":
         module = importlib.import_module(f"flights.reporting.report")
         module.CONFIG.update(get_srcs_dsts_from_crawlers_configs(OPERATORS))
