@@ -1,4 +1,16 @@
-# Flights Report ✈️
+# ✈️ test
+Generated report from config:
+```json
+{"dates_range": ["2026-02-01", "2026-03-04"],
+ "dsts": [["DTM", "HHN", "CGN"], "PFO", "NAP", "OPO"],
+ "max_price": 1000,
+ "min_hour_depart": {"*": "08:00", "GHV": "10:00", "OTP": "10:00"},
+ "min_hours_stay": 20,
+ "name": "test",
+ "nights_stay": [1, 7],
+ "order_by": ["nights", "price"],
+ "srcs": [["GHV", "OTP"]]}
+```
 - <details><summary>GHV / OTP --> NAP (Napoli.ITA)</summary>
 
   |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|

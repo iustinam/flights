@@ -1,4 +1,21 @@
-# Flights Report ✈️
+# ✈️ test-no-srcs-dsts
+Generated report from config:
+```json
+{"dates_range": ["2026-02-01", "2026-03-04"],
+ "dsts": ["GOA", "TRS", "ZAD", "VLC", "BDS", "SUF", "AHO", "PVK", "CHQ", "CTA",
+          "FMM", "HAM", "OPO", "JTR", "JSI", "HER", "CRL", "CFU", "HHN", "VIE",
+          "PFO", "CGN", "TRF", "TSF", "NCE", "QSR", "SVQ", "ATH", "BLL", "MAD",
+          "BRI", "GDN", "CIA", "BSL", "PSR", "JMK", "PMI", "MLA", "DTM", "LIS",
+          "STR", "BUD", "BCN", "PSA", "AGP", "SDR", "TFS", "LCA", "CPH", "SKG",
+          "BER", "CDT", "FCO", "NAP", "MRS", "AYT", "ALC", "VCE", "ZTH"],
+ "max_price": 1000,
+ "min_hour_depart": {"*": "08:00", "GHV": "10:00", "OTP": "10:00"},
+ "min_hours_stay": 20,
+ "name": "test-no-srcs-dsts",
+ "nights_stay": [2, 3],
+ "order_by": ["nights", "price"],
+ "srcs": ["GHV", "OTP"]}
+```
 - <details><summary>OTP --> SUF (Lamezia.ITA)</summary>
 
   |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
@@ -186,17 +203,6 @@
 
 </details>
 
-- <details><summary>OTP --> BLL (Billund.DK)</summary>
-
-  |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
-  |---|---|---|---|---|---|---|---|---|---|
-  |0|212|2|OTP > BLL|2026-02-27 00:00|106|BLL > OTP|**2026-03-01 00:00**|106|212 [02-27_00:00 - 03-01_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-27/2026-03-01/1/0/0/null)|
-  |1|212|2|OTP > BLL|**2026-02-28 00:00**|106|BLL > OTP|2026-03-02 00:00|106|212 [02-28_00:00 - 03-02_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-28/2026-03-02/1/0/0/null)|
-  |2|402|2|OTP > BLL|**2026-02-21 00:00**|296|BLL > OTP|2026-02-23 00:00|106|402 [02-21_00:00 - 02-23_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-21/2026-02-23/1/0/0/null)|
-  |3|592|2|OTP > BLL|2026-02-20 00:00|476|BLL > OTP|**2026-02-22 00:00**|116|592 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-20/2026-02-22/1/0/0/null)|
-
-</details>
-
 - <details><summary>GHV --> BUD</summary>
 
   |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
@@ -207,6 +213,17 @@
   |3|362|2|GHV > BUD|2026-02-18 00:00|116|BUD > GHV|2026-02-20 00:00|246|362 [02-18_00:00 - 02-20_00:00](https://www.wair.com/ro-ro/booking/select-flight/GHV/BUD/2026-02-18/2026-02-20/1/0/0/null)|
   |4|422|2|GHV > BUD|2026-02-20 00:00|266|BUD > GHV|**2026-02-22 00:00**|156|422 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/GHV/BUD/2026-02-20/2026-02-22/1/0/0/null)|
   |5|472|2|GHV > BUD|2026-02-25 00:00|106|BUD > GHV|2026-02-27 00:00|366|472 [02-25_00:00 - 02-27_00:00](https://www.wair.com/ro-ro/booking/select-flight/GHV/BUD/2026-02-25/2026-02-27/1/0/0/null)|
+
+</details>
+
+- <details><summary>OTP --> BLL (Billund.DK)</summary>
+
+  |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
+  |---|---|---|---|---|---|---|---|---|---|
+  |0|212|2|OTP > BLL|2026-02-27 00:00|106|BLL > OTP|**2026-03-01 00:00**|106|212 [02-27_00:00 - 03-01_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-27/2026-03-01/1/0/0/null)|
+  |1|212|2|OTP > BLL|**2026-02-28 00:00**|106|BLL > OTP|2026-03-02 00:00|106|212 [02-28_00:00 - 03-02_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-28/2026-03-02/1/0/0/null)|
+  |2|402|2|OTP > BLL|**2026-02-21 00:00**|296|BLL > OTP|2026-02-23 00:00|106|402 [02-21_00:00 - 02-23_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-21/2026-02-23/1/0/0/null)|
+  |3|592|2|OTP > BLL|2026-02-20 00:00|476|BLL > OTP|**2026-02-22 00:00**|116|592 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/BLL/2026-02-20/2026-02-22/1/0/0/null)|
 
 </details>
 
@@ -283,15 +300,6 @@
 
 </details>
 
-- <details><summary>OTP --> STR (Stuttgart)</summary>
-
-  |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
-  |---|---|---|---|---|---|---|---|---|---|
-  |0|422|2|OTP > STR|2026-02-27 00:00|156|STR > OTP|**2026-03-01 00:00**|266|422 [02-27_00:00 - 03-01_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/STR/2026-02-27/2026-03-01/1/0/0/null)|
-  |1|1452|2|OTP > STR|2026-02-20 00:00|796|STR > OTP|**2026-02-22 00:00**|656|1452 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/STR/2026-02-20/2026-02-22/1/0/0/null)|
-
-</details>
-
 - <details><summary>OTP --> DTM (Dortmund.DE)</summary>
 
   |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
@@ -300,6 +308,15 @@
   |1|502|2|OTP > DTM|2026-02-27 00:00|186|DTM > OTP|**2026-03-01 00:00**|316|502 [02-27_00:00 - 03-01_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/DTM/2026-02-27/2026-03-01/1/0/0/null)|
   |2|632|2|OTP > DTM|**2026-02-21 00:00**|426|DTM > OTP|2026-02-23 00:00|206|632 [02-21_00:00 - 02-23_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/DTM/2026-02-21/2026-02-23/1/0/0/null)|
   |3|722|2|OTP > DTM|2026-02-20 00:00|426|DTM > OTP|**2026-02-22 00:00**|296|722 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/DTM/2026-02-20/2026-02-22/1/0/0/null)|
+
+</details>
+
+- <details><summary>OTP --> STR (Stuttgart)</summary>
+
+  |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
+  |---|---|---|---|---|---|---|---|---|---|
+  |0|422|2|OTP > STR|2026-02-27 00:00|156|STR > OTP|**2026-03-01 00:00**|266|422 [02-27_00:00 - 03-01_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/STR/2026-02-27/2026-03-01/1/0/0/null)|
+  |1|1452|2|OTP > STR|2026-02-20 00:00|796|STR > OTP|**2026-02-22 00:00**|656|1452 [02-20_00:00 - 02-22_00:00](https://www.wair.com/ro-ro/booking/select-flight/OTP/STR/2026-02-20/2026-02-22/1/0/0/null)|
 
 </details>
 
