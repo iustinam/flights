@@ -72,7 +72,12 @@ def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
 def build_roundtrips_for_trip(
     df: pd.DataFrame, conf: dict, trip_from: list[str], trip_to: list[str]
 ) -> pd.DataFrame:
-    """Build a dataframe with all possible round trips for a given trip configuration (eg. from ["GHV", "OTP"] to ["DTM", "CGN"]) and calculate the total price for each round trip option, then sort by price and return the dataframe with the round trips options for the given trip configuration"""
+    """
+    Build a dataframe with all possible round trips for a given trip configuration
+    (eg. from ["GHV", "OTP"] to ["DTM", "CGN"]) and calculate the total price for each
+    round trip option, then sort by price and return the dataframe with the round
+    trips options for the given trip configuration
+    """
 
     logger.debug("%s → %s", trip_from, trip_to)
 
@@ -94,7 +99,9 @@ def build_roundtrips_for_trip(
     if outb.empty or inb.empty:
         return pd.DataFrame()
 
-    # Create a dataframe with all possible nights of stay (eg. 1 to 7) and merge it with the outbound flights to calculate the corresponding return dates, then merge with the inbound flights on the return date to find matching round trips
+    # Create a dataframe with all possible nights of stay (eg. 1 to 7) and merge it with
+    # the outbound flights to calculate the corresponding return dates, then merge with
+    # the inbound flights on the return date to find matching round trips
 
     nights_df = pd.DataFrame({"nights": range(*conf["nights_stay"])})
 
@@ -134,7 +141,10 @@ def build_roundtrips_for_trip(
 
 
 def build_trips(df: pd.DataFrame, conf: dict) -> list[dict]:
-    """Create all possible trips combinations by doing a Cartesian product between all source (lists) and destination (lists of proximity) airports"""
+    """
+    Create all possible trips combinations by doing a Cartesian product between all
+    source (lists) and destination (lists of proximity) airports.
+    """
     # eg. [(["GHV", "OTP"], ["DTM", "CGN", "HHN"]),...]
     trips_conf = list(itertools.product(conf["srcs"], conf["dsts"]))
 
@@ -157,7 +167,12 @@ def build_trips(df: pd.DataFrame, conf: dict) -> list[dict]:
 
 
 def get_flights_links_md(row: pd.Series) -> str:
-    """Generate markdown links to the flights pages for each round trip option. If the outbound and inbound flights are with the same operator and between the same airports, generate a single link to the return trip, otherwise generate separate links for outbound and inbound flights"""
+    """
+    Generate markdown links to the flights pages for each round trip option.
+    If the outbound and inbound flights are with the same operator and between the same
+    airports, generate a single link to the return trip, otherwise generate separate
+    links for outbound and inbound flights
+    """
 
     date_outb_str = row["date_outb"].strftime("%Y-%m-%d_%H:%M")
     date_inb_str = row["date_inb"].strftime("%Y-%m-%d_%H:%M")
