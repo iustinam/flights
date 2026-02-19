@@ -238,7 +238,7 @@ def format_trips_data(trips: list[dict]) -> list[dict]:
     return formatted_trips
 
 
-def generate_md(trips: list[dict], config: dict) -> str:
+def generate_md(trips: list[dict], config: dict) -> None:
     """Generate a markdown report using a jinja template and save it to a file"""
 
     config_str = pf(config, compact=True).replace("'", '"')
@@ -280,4 +280,4 @@ def run(config: dict) -> None:
     trips = build_trips(df, conf)
     trips = sorted(trips, key=lambda x: x["min_price"])
     formatted_trips = format_trips_data(trips)
-    report_md = generate_md(formatted_trips, config)
+    generate_md(formatted_trips, config)

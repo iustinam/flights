@@ -38,7 +38,7 @@ def merge_config(
 
 
 def get_srcs_dsts_from_crawlers_configs(operators: list) -> dict:
-    new_config = {"srcs": set(), "dsts": set()}
+    new_config = {"srcs": set[str](), "dsts": set[str]()}
     crawler_configs = []
     for operator in operators:
         crawler_configs.append(

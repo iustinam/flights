@@ -118,11 +118,11 @@ TRIP_URL = {
 }
 
 
-def as_list(x):
+def as_list(x: str | list) -> list:
     return x if isinstance(x, list) else [x]
 
 
-def as_list_of_lists(x):
+def as_list_of_lists(x: list) -> list[list]:
     return [as_list(i) for i in x]
 
 
