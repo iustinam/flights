@@ -10,7 +10,17 @@ from jinja2 import Environment, FileSystemLoader
 import logging
 
 from flights.config import DATA_DIR
-from .config import CONFIG, AIRPORTS, TEMPLATE_DIR, TEMPLATE_FILE, REPORT_FILE_TPL, MKDOCS_TEMPLATE_FILE, MKDOCS_REPORT_FILE_TPL, TRIP_URL, parse_config
+from .config import (
+    CONFIG,
+    AIRPORTS,
+    TEMPLATE_DIR,
+    TEMPLATE_FILE,
+    REPORT_FILE_TPL,
+    MKDOCS_TEMPLATE_FILE,
+    MKDOCS_REPORT_FILE_TPL,
+    TRIP_URL,
+    parse_config,
+)
 
 __all__ = ["run", "CONFIG"]
 
@@ -36,7 +46,7 @@ def load_data() -> pd.DataFrame:
 
 
 def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
-    """ Apply filters to the flights data """
+    """Apply filters to the flights data"""
 
     df = df.copy()
 
@@ -47,23 +57,22 @@ def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
     mask = False
     for src, min_hour in conf["min_hour_depart"].items():
         if src == "*":
-            mask |= (
-                (df["has_departure_time"]) &
-                (df["date"].dt.time < min_hour)
-            )
+            mask |= (df["has_departure_time"]) & (df["date"].dt.time < min_hour)
         else:
             mask |= (
-                df["src_dst"].str.startswith(src, na=False) &
-                (df["has_departure_time"]) &
-                (df["date"].dt.time < min_hour)
+                df["src_dst"].str.startswith(src, na=False)
+                & (df["has_departure_time"])
+                & (df["date"].dt.time < min_hour)
             )
     df = df.loc[~mask]
 
     return df
 
 
-def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str], trip_to: list[str]) -> pd.DataFrame:
-    """ Build a dataframe with all possible round trips for a given trip configuration (eg. from ["GHV", "OTP"] to ["DTM", "CGN", "HHN"]) and calculate the total price for each round trip option, then sort by price and return the dataframe with the round trips options for the given trip configuration """
+def build_roundtrips_for_trip(
+    df: pd.DataFrame, conf: dict, trip_from: list[str], trip_to: list[str]
+) -> pd.DataFrame:
+    """Build a dataframe with all possible round trips for a given trip configuration (eg. from ["GHV", "OTP"] to ["DTM", "CGN", "HHN"]) and calculate the total price for each round trip option, then sort by price and return the dataframe with the round trips options for the given trip configuration"""
 
     logger.debug("%s → %s", trip_from, trip_to)
 
@@ -71,10 +80,12 @@ def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str]
     # trip_from = ["GHV", "OTP"], trip_to = ["DTM", "CGN", "HHN"]
     # outbound_routes: ["GHV_DTM", "GHV_CGN", "GHV_HHN", "OTP_DTM", "OTP_CGN", "OTP_HHN"]
     # inbound_routes: ["DTM_GHV", "CGN_GHV", "HHN_GHV", "DTM_OTP", "CGN_OTP", "HHN_OTP"]
-    outbound_routes = [f"{src}_{dst}" for src, dst in
-                       itertools.product(trip_from, trip_to)]
-    inbound_routes = [f"{src}_{dst}" for src, dst in
-                      itertools.product(trip_to, trip_from)]
+    outbound_routes = [
+        f"{src}_{dst}" for src, dst in itertools.product(trip_from, trip_to)
+    ]
+    inbound_routes = [
+        f"{src}_{dst}" for src, dst in itertools.product(trip_to, trip_from)
+    ]
 
     outb = df.loc[df["src_dst"].isin(outbound_routes)]
     inb = df.loc[df["src_dst"].isin(inbound_routes)]
@@ -95,17 +106,17 @@ def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str]
     outb_inb = outb_ext.merge(
         inb.assign(join_date=inb["date"].dt.normalize()),
         on="join_date",
-        suffixes=("_outb", "_inb")
+        suffixes=("_outb", "_inb"),
     )
     if outb_inb.empty:
         return pd.DataFrame()
 
     # Filter out round trips that do not meet the minimum hours of stay requirement
     outb_inb["hours_stay"] = (
-        outb_inb["date_inb"] - outb_inb["date_outb"]).dt.total_seconds() / 3600
+        outb_inb["date_inb"] - outb_inb["date_outb"]
+    ).dt.total_seconds() / 3600
 
-    outb_inb = outb_inb.loc[
-        outb_inb["hours_stay"] >= conf["min_hours_stay"]]
+    outb_inb = outb_inb.loc[outb_inb["hours_stay"] >= conf["min_hours_stay"]]
 
     if outb_inb.empty:
         return pd.DataFrame()
@@ -115,13 +126,14 @@ def build_roundtrips_for_trip(df: pd.DataFrame, conf: dict, trip_from: list[str]
 
     # Sort
     outb_inb = outb_inb.sort_values(
-        conf["order_by"], ascending=[True]*len(conf["order_by"]))
+        conf["order_by"], ascending=[True] * len(conf["order_by"])
+    )
 
     return outb_inb
 
 
 def build_trips(df: pd.DataFrame, conf: dict) -> list[dict]:
-    """ Create all possible trips combinations by doing a Cartesian product between all source (lists) and destination (lists of proximity) airports"""
+    """Create all possible trips combinations by doing a Cartesian product between all source (lists) and destination (lists of proximity) airports"""
     # eg. [(["GHV", "OTP"], ["DTM", "CGN", "HHN"]),...]
     trips_conf = list(itertools.product(conf["srcs"], conf["dsts"]))
 
@@ -131,18 +143,20 @@ def build_trips(df: pd.DataFrame, conf: dict) -> list[dict]:
         outb_inb = build_roundtrips_for_trip(df, conf, trip_from, trip_to)
 
         if not outb_inb.empty:
-            trips.append({
-                "from": trip_from,
-                "to": trip_to,
-                "df": outb_inb,
-                "min_price": outb_inb["price"].min()
-            })
+            trips.append(
+                {
+                    "from": trip_from,
+                    "to": trip_to,
+                    "df": outb_inb,
+                    "min_price": outb_inb["price"].min(),
+                }
+            )
 
     return trips
 
 
 def get_flights_links_md(row: pd.Series) -> str:
-    """ Generate markdown links to the flights pages for each round trip option. If the outbound and inbound flights are with the same operator and between the same airports, generate a single link to the return trip, otherwise generate separate links for outbound and inbound flights"""
+    """Generate markdown links to the flights pages for each round trip option. If the outbound and inbound flights are with the same operator and between the same airports, generate a single link to the return trip, otherwise generate separate links for outbound and inbound flights"""
 
     date_outb_str = row["date_outb"].strftime("%Y-%m-%d_%H:%M")
     date_inb_str = row["date_inb"].strftime("%Y-%m-%d_%H:%M")
@@ -150,7 +164,11 @@ def get_flights_links_md(row: pd.Series) -> str:
     src_inb, dst_inb = row["src_dst_inb"].split("_")
 
     # single link when we have the same operator and same airports for outbound and inbound
-    if row["operator_outb"] == row["operator_inb"] and src_outb == dst_inb and dst_outb == src_inb:
+    if (
+        row["operator_outb"] == row["operator_inb"]
+        and src_outb == dst_inb
+        and dst_outb == src_inb
+    ):
         url = TRIP_URL[row["operator_outb"]]["return"].format(
             src=src_outb,
             dst=dst_outb,
@@ -161,8 +179,10 @@ def get_flights_links_md(row: pd.Series) -> str:
     else:
         # separate links for outbound and inbound when we have different operators or different airports
         links = []
-        routes = [(src_outb, dst_outb, date_outb_str, row["operator_outb"]),
-                  (src_inb, dst_inb, date_inb_str, row["operator_inb"])]
+        routes = [
+            (src_outb, dst_outb, date_outb_str, row["operator_outb"]),
+            (src_inb, dst_inb, date_inb_str, row["operator_inb"]),
+        ]
         for src, dst, date_str, operator in routes:
             url = TRIP_URL[operator]["one_way"].format(
                 src=src,
@@ -176,21 +196,24 @@ def get_flights_links_md(row: pd.Series) -> str:
 
 
 def format_trips_data(trips: list[dict]) -> list[dict]:
-    """ Format the trips data for rendering in the report """
+    """Format the trips data for rendering in the report"""
     formatted_trips = []
 
     for trip in trips:
         # make the route more readable by replacing airport codes with names (eg. "GHV (Ghimbav) --> DTM (Dortmund)")
-        trip_from = [f"{code} ({AIRPORTS[code]})" if code in AIRPORTS.keys(
-        ) else code for code in trip["from"]]
-        trip_to = [f"{code} ({AIRPORTS[code]})" if code in AIRPORTS.keys(
-        ) else code for code in trip["to"]]
+        trip_from = [
+            f"{code} ({AIRPORTS[code]})" if code in AIRPORTS.keys() else code
+            for code in trip["from"]
+        ]
+        trip_to = [
+            f"{code} ({AIRPORTS[code]})" if code in AIRPORTS.keys() else code
+            for code in trip["to"]
+        ]
 
         df = trip["df"].copy()
 
         # Add markdown links to the flights pages for each round trip option
-        df["links"] = df.apply(
-            lambda row: get_flights_links_md(row), axis=1)
+        df["links"] = df.apply(lambda row: get_flights_links_md(row), axis=1)
 
         # Format dates and highlight in bold the ones that are on weekend (Sat, Sun)
         df["date_outb_fmt"] = df["date_outb"].dt.strftime("%Y-%m-%d %H:%M")
@@ -204,17 +227,19 @@ def format_trips_data(trips: list[dict]) -> list[dict]:
             "**" + df["date_inb_fmt"] + "**"
         )
 
-        formatted_trips.append({
-            "route": f'{" / ".join(trip_from)} --> {" / ".join(trip_to)}',
-            "df": df,
-            "min_price": trip["min_price"],
-        })
+        formatted_trips.append(
+            {
+                "route": f'{" / ".join(trip_from)} --> {" / ".join(trip_to)}',
+                "df": df,
+                "min_price": trip["min_price"],
+            }
+        )
 
     return formatted_trips
 
 
 def generate_md(trips: list[dict], config: dict) -> str:
-    """ Generate a markdown report using a jinja template and save it to a file"""
+    """Generate a markdown report using a jinja template and save it to a file"""
 
     config_str = pf(config, compact=True).replace("'", '"')
 
@@ -225,8 +250,9 @@ def generate_md(trips: list[dict], config: dict) -> str:
     )
 
     template = env.get_template(TEMPLATE_FILE)
-    md = template.render(name=config["name"], config_str=config_str,
-                         trips=trips, airports=AIRPORTS)
+    md = template.render(
+        name=config["name"], config_str=config_str, trips=trips, airports=AIRPORTS
+    )
 
     REPORT_FILE = REPORT_FILE_TPL.format(name=config["name"])
     with open(REPORT_FILE, "w") as f:
@@ -236,8 +262,9 @@ def generate_md(trips: list[dict], config: dict) -> str:
 
     # Generate a separate markdown report for mkdocs
     template = env.get_template(MKDOCS_TEMPLATE_FILE)
-    md = template.render(name=config["name"], config_str=config_str,
-                         trips=trips, airports=AIRPORTS)
+    md = template.render(
+        name=config["name"], config_str=config_str, trips=trips, airports=AIRPORTS
+    )
 
     REPORT_FILE = MKDOCS_REPORT_FILE_TPL.format(name=config["name"])
     with open(REPORT_FILE, "w") as f:

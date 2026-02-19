@@ -28,9 +28,7 @@ def main() -> None:
     # crawl command
     crawl_parser = subparsers.add_parser("crawl")
     crawl_parser.add_argument(
-        "operator",
-        choices=OPERATORS,
-        help="Which crawler to run"
+        "operator", choices=OPERATORS, help="Which crawler to run"
     )
     crawl_parser.add_argument("--config", help="Path to config file")
     crawl_parser.add_argument("--config-json", help="Inline JSON config")
@@ -44,8 +42,7 @@ def main() -> None:
 
     # Run the appropriate module based on the command (and operator if present), pass the merged configuration
     if args.command == "crawl":
-        module = importlib.import_module(
-            f"flights.crawlers.{args.operator}")
+        module = importlib.import_module(f"flights.crawlers.{args.operator}")
     elif args.command == "report":
         module = importlib.import_module(f"flights.reporting.report")
         module.CONFIG.update(get_srcs_dsts_from_crawlers_configs(OPERATORS))
