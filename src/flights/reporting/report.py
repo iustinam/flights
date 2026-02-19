@@ -4,12 +4,13 @@ import glob
 import joblib
 from pathlib import Path
 import itertools
+from pprint import pformat as pf
 import datetime as dt
 from jinja2 import Environment, FileSystemLoader
 import logging
 
 from flights.config import DATA_DIR
-from .config import CONFIG, AIRPORTS, REPORT_FILE_TPL, TEMPLATE_DIR, TEMPLATE_FILE, TRIP_URL, parse_config
+from .config import CONFIG, AIRPORTS, TEMPLATE_DIR, TEMPLATE_FILE, REPORT_FILE_TPL, MKDOCS_TEMPLATE_FILE, MKDOCS_REPORT_FILE_TPL, TRIP_URL, parse_config
 
 __all__ = ["run", "CONFIG"]
 
@@ -215,6 +216,8 @@ def format_trips_data(trips: list[dict]) -> list[dict]:
 def generate_md(trips: list[dict], config: dict) -> str:
     """ Generate a markdown report using a jinja template and save it to a file"""
 
+    config_str = pf(config, compact=True).replace("'", '"')
+
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
         trim_blocks=True,
@@ -222,13 +225,21 @@ def generate_md(trips: list[dict], config: dict) -> str:
     )
 
     template = env.get_template(TEMPLATE_FILE)
-    md = template.render(trips=trips, airports=AIRPORTS)
+    md = template.render(name=config["name"], config_str=config_str,
+                         trips=trips, airports=AIRPORTS)
 
-    REPORT_FILE = REPORT_FILE_TPL.format(
-        dates=f"{'_'.join(config['dates_range'])}",
-        max_price=config["max_price"],
-        nights=f"{'_'.join(map(str, config['nights_stay']))}",
-    )
+    REPORT_FILE = REPORT_FILE_TPL.format(name=config["name"])
+    with open(REPORT_FILE, "w") as f:
+        f.write(md)
+
+    logging.info(REPORT_FILE)
+
+    # Generate a separate markdown report for mkdocs
+    template = env.get_template(MKDOCS_TEMPLATE_FILE)
+    md = template.render(name=config["name"], config_str=config_str,
+                         trips=trips, airports=AIRPORTS)
+
+    REPORT_FILE = MKDOCS_REPORT_FILE_TPL.format(name=config["name"])
     with open(REPORT_FILE, "w") as f:
         f.write(md)
 

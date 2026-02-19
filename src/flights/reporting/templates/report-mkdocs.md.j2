@@ -1,0 +1,15 @@
+# ✈️ {{ name }}
+Generated report from config:
+```json
+{{ config_str }}
+```
+{% for trip in trips %}
+??? note "{{ trip.route }}"
+
+    |IDX|TOTAL_PRICE|NIGHTS|FROM>TO|DATE|PRICE|TO>FROM|DATE|PRICE|LINKS|
+    |---|---|---|---|---|---|---|---|---|---|
+    {% for row in trip.df.itertuples() %}
+    |{{ loop.index0 }}|{{ row.price|int }}|{{ row.nights }}|{{ row.src_dst_outb.replace("_", " > ") }}|{{ row.date_outb_fmt }}|{{ row.price_outb|int }}|{{ row.src_dst_inb.replace("_", " > ") }}|{{ row.date_inb_fmt }}|{{ row.price_inb|int }}|{{ row.price|int }} {{row.links}}|
+    {% endfor %}
+
+{% endfor %}

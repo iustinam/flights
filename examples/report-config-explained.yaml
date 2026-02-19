@@ -1,3 +1,4 @@
+name: 'report-config-explained' # report name, will be used in the report title and filename
 srcs:
 - [ GHV, OTP ] # these 2 airports are close to home, so we can use them interchangeably as source
 dsts:

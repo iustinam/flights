@@ -3,7 +3,7 @@
 Features:
 - given a list of source airports and a list of destination airports, find flights using any combination of them (eg. if you have multiple airports near home or near your destination)
 - combines flights from multiple operators (outbound and inbound flights from different operators)
-- helps decide on the next vacation destination by providing a report with filtered + sorted flights based on multiple criteria (see [configuration example](examples/report-config.yaml))
+- helps decide on the next vacation destination by providing a report with filtered + sorted flights based on multiple criteria (see [configuration example](examples/report-config-explained.yaml))
 
 Generate custom report based on latest data:
 ```sh

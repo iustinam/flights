@@ -1,0 +1,21 @@
+site_name: Flights Reports
+site_url: https://iustinam.github.io/flights/
+use_directory_urls: true
+
+theme:
+  name: material
+
+# nav:
+# - Home: index.md
+
+# - Reports:
+#   - reports/
+# - Reports: reports/index.md
+
+markdown_extensions:
+- admonition
+- pymdownx.details
+- pymdownx.superfences
+
+extra_css:
+- stylesheets/extra.css

@@ -1,0 +1,12 @@
+.md-grid {
+  max-width: 100% !important;
+}
+.md-content {
+  max-width: 100% !important;
+}
+.md-typeset__table {
+  min-width: max-content;
+}
+.md-sidebar--secondary {
+  display: none !important;
+}

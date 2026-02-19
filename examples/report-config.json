@@ -1,4 +1,5 @@
 {
+    "name": "report-config",
     "srcs": [
         [ "GHV", "OTP" ]
     ],

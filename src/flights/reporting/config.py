@@ -12,11 +12,19 @@ CONFIG = {
     'dates_range': ['2025-11-07', '2025-12-31'],
     'min_hour_depart': {'OTP': '10:00', 'GHV': '10:00'},
 }
+TEMPLATE_DIR = Path(__file__).parent / "templates"
+
 REPORTS_DIR = Path(os.environ.get(
     "FLIGHTS_REPORT_DIR", PROJECT_ROOT / "reports"))
-REPORT_FILE_TPL = f"{REPORTS_DIR}/flights__{{dates}}__{{max_price}}__{{nights}}.md"
-TEMPLATE_DIR = Path(__file__).parent / "templates"
+# REPORT_FILE_TPL = f"{REPORTS_DIR}/flights__{{dates}}__{{max_price}}__{{nights}}.md"
+REPORT_FILE_TPL = f"{REPORTS_DIR}/flights-{{name}}.md"
 TEMPLATE_FILE = "report.md.j2"
+
+MKDOCS_REPORTS_DIR = Path(os.environ.get(
+    "FLIGHTS_REPORT_DIR", PROJECT_ROOT / "docs" / "reports"))
+MKDOCS_REPORT_FILE_TPL = f"{MKDOCS_REPORTS_DIR}/flights-{{name}}.md"
+MKDOCS_TEMPLATE_FILE = "report-mkdocs.md.j2"
+
 
 AIRPORTS = {
     'AAR': 'Aarhus.DK',
@@ -116,6 +124,9 @@ def as_list_of_lists(x): return [as_list(i) for i in x]
 
 def parse_config(config: dict) -> dict:
     conf = deepcopy(config)
+
+    if not config.get("name"):
+        config["name"] = f"{'-'.join(config['dates_range'])}--{config['max_price']}--{'-'.join(map(str, config['nights_stay']))}"
     conf['srcs'] = as_list_of_lists(config['srcs'])
     conf['dsts'] = as_list_of_lists(config['dsts'])
     # conf['nights_stay'] = range(*conf['nights_stay'])
