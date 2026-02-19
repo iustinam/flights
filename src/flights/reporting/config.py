@@ -1,6 +1,7 @@
+import os
 from copy import deepcopy
 from pathlib import Path
-import os
+
 import pandas as pd
 
 from flights.config import PROJECT_ROOT
@@ -131,7 +132,9 @@ def parse_config(config: dict) -> dict:
 
     if not config.get("name"):
         config["name"] = (
-            f"{'-'.join(config['dates_range'])}--{config['max_price']}--{'-'.join(map(str, config['nights_stay']))}"
+            f"{'-'.join(config['dates_range'])}--"
+            f"{config['max_price']}--"
+            f"{'-'.join(map(str, config['nights_stay']))}"
         )
     conf["srcs"] = as_list_of_lists(config["srcs"])
     conf["dsts"] = as_list_of_lists(config["dsts"])

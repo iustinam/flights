@@ -1,7 +1,7 @@
 import itertools
 from pathlib import Path
 
-from flights.config import DATA_DIR, DATETIME_NOW, DATETIME_NOW_STR
+from flights.config import DATA_DIR, DATETIME_NOW_STR
 
 SITE = "wair"
 
@@ -75,7 +75,8 @@ src_dst_pairs = list(
         [list(itertools.product(comb["srcs"], comb["dsts"])) for comb in src_dsts]
     )
 )
-# src_dst_pairs += [(dst, src) for src, dst in src_dst_pairs] # the request includes return flights
+# # the request already includes return flights
+# src_dst_pairs += [(dst, src) for src, dst in src_dst_pairs]
 
 # number of days between departure and return query dates (will return [-7,+7] days)
 RETURN_DAYS_DIFF = 7

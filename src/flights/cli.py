@@ -2,7 +2,7 @@ import argparse
 import importlib
 import logging
 
-from flights.config import merge_config, get_srcs_dsts_from_crawlers_configs, OPERATORS
+from flights.config import OPERATORS, get_srcs_dsts_from_crawlers_configs, merge_config
 
 
 def main() -> None:
@@ -40,11 +40,12 @@ def main() -> None:
 
     args = parser.parse_args(remaining)
 
-    # Run the appropriate module based on the command (and operator if present), pass the merged configuration
+    # Run the appropriate module based on the command (and operator if present)
+    # with the merged configuration
     if args.command == "crawl":
         module = importlib.import_module(f"flights.crawlers.{args.operator}")
     elif args.command == "report":
-        module = importlib.import_module(f"flights.reporting.report")
+        module = importlib.import_module("flights.reporting.report")
         module.CONFIG.update(get_srcs_dsts_from_crawlers_configs(OPERATORS))
 
     config = merge_config(

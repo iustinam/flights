@@ -1,7 +1,7 @@
 import itertools
 from pathlib import Path
 
-from flights.config import DATA_DIR, DATETIME_NOW, DATETIME_NOW_STR
+from flights.config import DATA_DIR, DATETIME_NOW_STR
 
 SITE = "rair"
 

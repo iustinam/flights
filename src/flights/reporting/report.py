@@ -1,23 +1,23 @@
-import pandas as pd
-import os
 import glob
-import joblib
-from pathlib import Path
 import itertools
-from pprint import pformat as pf
-import datetime as dt
-from jinja2 import Environment, FileSystemLoader
 import logging
+from pathlib import Path
+from pprint import pformat as pf
+
+import joblib
+import pandas as pd
+from jinja2 import Environment, FileSystemLoader
 
 from flights.config import DATA_DIR
+
 from .config import (
-    CONFIG,
     AIRPORTS,
+    CONFIG,
+    MKDOCS_REPORT_FILE_TPL,
+    MKDOCS_TEMPLATE_FILE,
+    REPORT_FILE_TPL,
     TEMPLATE_DIR,
     TEMPLATE_FILE,
-    REPORT_FILE_TPL,
-    MKDOCS_TEMPLATE_FILE,
-    MKDOCS_REPORT_FILE_TPL,
     TRIP_URL,
     parse_config,
 )
@@ -72,14 +72,15 @@ def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
 def build_roundtrips_for_trip(
     df: pd.DataFrame, conf: dict, trip_from: list[str], trip_to: list[str]
 ) -> pd.DataFrame:
-    """Build a dataframe with all possible round trips for a given trip configuration (eg. from ["GHV", "OTP"] to ["DTM", "CGN", "HHN"]) and calculate the total price for each round trip option, then sort by price and return the dataframe with the round trips options for the given trip configuration"""
+    """Build a dataframe with all possible round trips for a given trip configuration (eg. from ["GHV", "OTP"] to ["DTM", "CGN"]) and calculate the total price for each round trip option, then sort by price and return the dataframe with the round trips options for the given trip configuration"""
 
     logger.debug("%s → %s", trip_from, trip_to)
 
-    # Get all possible outbound and inbound routes for a trip by doing a Cartesian product between the departure and arrival airports
-    # trip_from = ["GHV", "OTP"], trip_to = ["DTM", "CGN", "HHN"]
-    # outbound_routes: ["GHV_DTM", "GHV_CGN", "GHV_HHN", "OTP_DTM", "OTP_CGN", "OTP_HHN"]
-    # inbound_routes: ["DTM_GHV", "CGN_GHV", "HHN_GHV", "DTM_OTP", "CGN_OTP", "HHN_OTP"]
+    # Get all possible outbound and inbound routes for a trip
+    # by doing a Cartesian product between the departure and arrival airports:
+    # Eg for: trip_from = ["GHV", "OTP"], trip_to = ["DTM", "CGN"]:
+    #   * outbound_routes: ["GHV_DTM", "GHV_CGN", "OTP_DTM", "OTP_CGN"]
+    #   * inbound_routes: ["DTM_GHV", "CGN_GHV", "DTM_OTP", "CGN_OTP"]
     outbound_routes = [
         f"{src}_{dst}" for src, dst in itertools.product(trip_from, trip_to)
     ]
@@ -163,7 +164,7 @@ def get_flights_links_md(row: pd.Series) -> str:
     src_outb, dst_outb = row["src_dst_outb"].split("_")
     src_inb, dst_inb = row["src_dst_inb"].split("_")
 
-    # single link when we have the same operator and same airports for outbound and inbound
+    # single link when we have the same operator+airports for outbound and inbound
     if (
         row["operator_outb"] == row["operator_inb"]
         and src_outb == dst_inb
@@ -177,7 +178,7 @@ def get_flights_links_md(row: pd.Series) -> str:
         )
         links_str = f"[{date_outb_str[5:]} - {date_inb_str[5:]}]({url})"
     else:
-        # separate links for outbound and inbound when we have different operators or different airports
+        # separate links for outbound and inbound if different operators/airports
         links = []
         routes = [
             (src_outb, dst_outb, date_outb_str, row["operator_outb"]),
@@ -200,7 +201,8 @@ def format_trips_data(trips: list[dict]) -> list[dict]:
     formatted_trips = []
 
     for trip in trips:
-        # make the route more readable by replacing airport codes with names (eg. "GHV (Ghimbav) --> DTM (Dortmund)")
+        # make the route more readable by replacing airport codes with names
+        # (eg. "GHV (Ghimbav) --> DTM (Dortmund)")
         trip_from = [
             f"{code} ({AIRPORTS[code]})" if code in AIRPORTS.keys() else code
             for code in trip["from"]
