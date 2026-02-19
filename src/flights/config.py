@@ -4,6 +4,10 @@ import json
 import yaml
 import copy
 import importlib
+from datetime import datetime
+
+DATETIME_NOW = datetime.now()
+DATETIME_NOW_STR = DATETIME_NOW.strftime("%Y.%m.%d_%H.%M.%S")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = Path(os.environ.get("FLIGHTS_DATA_DIR", PROJECT_ROOT / "data"))

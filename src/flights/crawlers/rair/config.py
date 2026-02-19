@@ -1,12 +1,9 @@
 import itertools
-from datetime import datetime, timedelta
 from pathlib import Path
 
-from flights.config import DATA_DIR
+from flights.config import DATA_DIR, DATETIME_NOW, DATETIME_NOW_STR
 
 SITE = 'rair'
-DATETIME_NOW = datetime.now()
-DATETIME_NOW_STR = DATETIME_NOW.strftime("%Y.%m.%d_%H.%M.%S")
 
 DATA_FPATH = Path(DATA_DIR / f'{SITE}.joblib')
 DATA_FPATH_HISTORY = Path(DATA_DIR / 'history' /
