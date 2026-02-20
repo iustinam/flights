@@ -27,7 +27,7 @@ pip install -e .
 
 flights crawl rair
 flights crawl wizz
-flights report --config examples/report-config.yaml
+flights report --config examples/test.json
 ```
 or:
 ```sh
