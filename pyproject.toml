@@ -6,20 +6,52 @@ build-backend = "setuptools.build_meta"
 name = "flights"
 version = "0.1.0"
 description = "Flights"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
-    "PyYAML", 
+    "pyyaml", 
     "requests", 
     "pandas", 
-    "Jinja2", 
+    "jinja2", 
     "joblib"
 ]
 
-[project.scripts]
-flights = "flights.cli:main"
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+    "mypy",
+    "mkdocs",
+    "mkdocs-material",
+    "types-pyyaml",
+    "types-requests",
+    # "types-pandas",
+    "types-jinja2",
+    # "docformatter",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# -------------------
+# Formatting
+# -------------------
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = 3.12
+ignore_missing_imports = true
+warn_unused_configs = true
+disallow_untyped_defs = true

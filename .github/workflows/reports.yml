@@ -1,0 +1,77 @@
+name: Generate & Deploy Reports
+
+on:
+  workflow_dispatch:
+    inputs:
+      config_json:
+        description: "Inline JSON config"
+        required: true
+        type: string
+
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    outputs:
+      artifact-name: pages-artifact
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install
+        run: make install
+
+      # - name: Lint + Type
+      #   run: make check
+
+      - name: Generate Report (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          CONFIG_JSON='${{ inputs.config_json }}' make report-json
+
+      - name: Generate Report (push)
+        if: github.event_name == 'push'
+        run: make report-default
+
+      - name: Build Site
+        run: make build-site
+
+      - name: Copy raw reports
+        run: cp -r reports/* site/reports || true
+
+      - name: Debug site structure
+        run: ls -R site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+
+    steps:
+      - uses: actions/deploy-pages@v4
