@@ -5,6 +5,10 @@ Features:
 - combines flights from multiple operators (outbound and inbound flights from different operators)
 - helps decide on the next vacation destination by providing a report with filtered + sorted flights based on multiple criteria (see [configuration example](examples/report-config-explained.yaml))
 
+Reports examples:
+- https://iustinam.github.io/flights/reports/flights-test/ ([source](reports/flights-test.md))
+- https://iustinam.github.io/flights/reports/flights-test-no-srcs-dsts/ ([source](reports/flights-test-no-srcs-dsts.md))
+
 Generate custom report based on latest data:
 ```sh
 curl -X POST \
