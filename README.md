@@ -28,9 +28,6 @@ curl -X POST \
 Usage:
 ```sh
 pip install -e .
-
-flights crawl rair
-flights crawl wizz
 flights report --config examples/test.json
 ```
 
