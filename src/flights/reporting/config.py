@@ -12,6 +12,7 @@ CONFIG = {
     "nights_stay": [1, 1],
     "dates_range": ["2025-11-07", "2025-12-31"],
     "min_hour_depart": {"OTP": "10:00", "GHV": "10:00"},
+    "currency": "ron",
 }
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
@@ -139,10 +140,11 @@ def parse_config(config: dict) -> dict:
     conf["srcs"] = as_list_of_lists(config["srcs"])
     conf["dsts"] = as_list_of_lists(config["dsts"])
     # conf['nights_stay'] = range(*conf['nights_stay'])
-    conf["dates_range"] = [
-        pd.to_datetime(config["dates_range"][0]),
-        pd.to_datetime(config["dates_range"][1]) + pd.Timedelta(days=1),
-    ]
+    if config["dates_range"]:
+        conf["dates_range"] = [
+            pd.to_datetime(config["dates_range"][0]),
+            pd.to_datetime(config["dates_range"][1]) + pd.Timedelta(days=1),
+        ]
     for src in conf["min_hour_depart"].keys():
         conf["min_hour_depart"][src] = pd.to_datetime(
             conf["min_hour_depart"][src], format="%H:%M"

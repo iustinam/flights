@@ -9,6 +9,7 @@ import yaml
 
 DATETIME_NOW = datetime.now()
 DATETIME_NOW_STR = DATETIME_NOW.strftime("%Y.%m.%d_%H.%M.%S")
+EUR_RON_RATE = 5.1
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = Path(os.environ.get("FLIGHTS_DATA_DIR", PROJECT_ROOT / "data"))

@@ -1,49 +1,50 @@
 import itertools
+import os
 from pathlib import Path
 
 from flights.config import DATA_DIR, DATETIME_NOW_STR
 
 SITE = "rair"
+if "RAIR_DOMAIN" not in os.environ:
+    raise RuntimeError("RAIR_DOMAIN environment variable is not set")
+RAIR_DOMAIN = os.environ["RAIR_DOMAIN"]
 
 DATA_FPATH = Path(DATA_DIR / f"{SITE}.joblib")
 DATA_FPATH_HISTORY = Path(DATA_DIR / "history" / f"{SITE}_{DATETIME_NOW_STR}.joblib")
 
+# fmt: off
 src_dsts = [
     {
-        "srcs": ["OTP"],  # ,'BCM','CND','TGM']
+        "srcs": ["OTP"],  # ,"BCM","CND","TGM"]
         "dsts": [
-            "VIE",
-            "CRL",
-            "ZAD",
-            "PFO",
-            "MRS",
-            "BER",
-            "CHQ",
-            "CFU",
-            "JSI",
-            "SKG",
-            # 'DUB',
-            "GOA",
-            "SUF",
-            "PSR",
-            "TSF",
-            "PSA",
-            "NAP",
-            "FCO",
-            "CIA",  # 'PMO','PEG','CTA','BGY',
-            "MAD",
-            "AGP",
-            "PMI",
-            # 'LIS','TFS'-nuE, #'LPA'-nonExistent,
-            "MLA",  # 'LCA'-nuE,'AHO'-nonExistent,
-            # 'BRS','EDI', # UK
-            "JSI",
-            "CFU",  # 'ZTH','JMK','JTR','HER','PVK',, # 'ATH',
-            # 'BLL','CPH', 'AAR', # DK -nonExistent
-            # 'BUD','DTM','CAM', -nonExistent
+            "VIE", # "SZG", # Austria 
+            # "CRL", # "BRU", # Belgium
+            "VAR", # Bulgaria
+            "BSL", # Switzerland
+            "PFO", "LCA", # Cyprus
+            "PRG", # Czech Republic
+            "BER", "CGN", "HHN", "NRN", # Germany
+            # "AAR", "CPH", # Denmark
+            # Spain:
+            "AGP", "ALC", "PMI", "TFS", # "ACE", "BCN", "MAD", "RMU", "VLC","LPA",  #wwi
+            "ZAD", # Croatia
+            "MRS", # France
+            # Greece:
+            "CHQ","CFU","JSI","JTR","SKG", # "ZTH","JMK","HER","PVK","ATH",
+            # "DUB", # Ireland
+            # Italy:
+            "GOA", "SUF", "PSR", "TSF", "PSA","NAP","FCO","CIA", 
+            # "PMO","PEG","CTA","BGY",
+            # "LIS",# Portugal
+            "MLA", # "LCA"-nonExistent,"AHO"-nonExistent,
+            # "BRS","EDI", # UK
+            # "BLL","CPH", "AAR", # DK -nonExistent
+            # "BUD", 
+            # "DTM","CAM", -nonExistent
         ],
     },
 ]
+# fmt: on
 
 src_dst_pairs = list(
     itertools.chain.from_iterable(
@@ -55,7 +56,28 @@ src_dst_pairs += [(dst, src) for src, dst in src_dst_pairs]
 DBG = 0
 
 CONFIG = {
-    "days_to_query": range(7, 1 * 30, 30),  # 1 month
+    "days_to_query": range(7, 3 * 30, 30),  # 3 months
     "src_dst_pairs": src_dst_pairs,
     "src_dsts": src_dsts,
+}
+
+FLIGHTS_URL_TPL = f"https://www.{RAIR_DOMAIN}/api/farfnd/v4/oneWayFares/{{}}/cheapestPerDay?outboundMonthOfDate={{}}&currency=EUR&promoCode="
+
+HEADERS = {
+    "user-agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9,ro;q=0.8",
+    "client": "desktop",
+    "client-version": "3.130.1",
+    "priority": "u=1, i",
+    "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Linux"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referrer-Policy": "same-origin",
 }

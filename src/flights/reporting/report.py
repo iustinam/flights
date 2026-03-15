@@ -27,7 +27,7 @@ __all__ = ["run", "CONFIG"]
 logger = logging.getLogger(__name__)
 
 
-def load_data() -> pd.DataFrame:
+def load_data(conf: dict) -> pd.DataFrame:
     dfs = []
     for file in glob.glob(f"{DATA_DIR}/*.joblib"):
         data = joblib.load(file)
@@ -41,6 +41,7 @@ def load_data() -> pd.DataFrame:
     df_all["has_departure_time"] = ~df_all["date"].str.endswith("00:00")
 
     df_all["date"] = pd.to_datetime(df_all["date"], errors="coerce")
+    df_all["price"] = df_all[f"price_{conf['currency']}"]
 
     return df_all
 
@@ -292,7 +293,7 @@ def generate_md(trips: list[dict], config: dict) -> None:
 
 def run(config: dict) -> None:
     conf = parse_config(config)
-    df = load_data()
+    df = load_data(config)
     df = filter_flights(df, conf)
     trips = build_trips(df, conf)
     trips = sorted(trips, key=lambda x: x["min_price"])
