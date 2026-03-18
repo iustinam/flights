@@ -44,5 +44,6 @@ Development:
 make format
 make check
 make lint-fix
+make type
 make local-run
 ```

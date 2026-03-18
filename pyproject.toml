@@ -29,6 +29,9 @@ dev = [
     # "docformatter",
 ]
 
+[project.scripts]
+flights = "flights.cli:main"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

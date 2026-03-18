@@ -49,7 +49,7 @@ def get_api_version() -> str:
 
 def run(config: dict) -> None:
     api_version = get_api_version()
-    dates = []
+    dates: list[dict] = []
 
     for src, dst in config["src_dst_pairs"]:
         for day in config["days_to_query"]:

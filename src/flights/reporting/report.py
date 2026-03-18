@@ -52,7 +52,8 @@ def filter_flights(df: pd.DataFrame, conf: dict) -> pd.DataFrame:
     df = df.copy()
 
     # Select only flights within the specified date range
-    df = df.loc[(df["date"].between(*conf["dates_range"]))]
+    if "dates_range" in conf.keys():
+        df = df.loc[(df["date"].between(*conf["dates_range"]))]
 
     # Filter out departures that are too early (eg. before 08:00)
     mask = False

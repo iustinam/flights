@@ -7,12 +7,14 @@ import pandas as pd
 from flights.config import PROJECT_ROOT
 
 CONFIG = {
-    "max_price": 1000,
+    "name": "default",
+    # "dates_range": ["2025-11-07", "2025-12-31"],
+    "min_hour_depart": {"OTP": "10:00", "GHV": "10:00", "*": "08:00"},
+    "nights_stay": [2, 3],
     "min_hours_stay": 20,
-    "nights_stay": [1, 1],
-    "dates_range": ["2025-11-07", "2025-12-31"],
-    "min_hour_depart": {"OTP": "10:00", "GHV": "10:00"},
+    "order_by": ["nights", "price"],
     "currency": "ron",
+    "max_price": 1000,
 }
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
@@ -135,14 +137,15 @@ def parse_config(config: dict) -> dict:
 
     if not config.get("name"):
         config["name"] = (
-            f"{'-'.join(config['dates_range'])}--"
+            f"{'-'.join(config.get('dates_range',[]))}--"
             f"{config['max_price']}--"
             f"{'-'.join(map(str, config['nights_stay']))}"
         )
     conf["srcs"] = as_list_of_lists(config["srcs"])
     conf["dsts"] = as_list_of_lists(config["dsts"])
     # conf['nights_stay'] = range(*conf['nights_stay'])
-    if config["dates_range"]:
+    conf["nights_stay"][1] += 1  # make the end of the range inclusive
+    if "dates_range" in config.keys():
         conf["dates_range"] = [
             pd.to_datetime(config["dates_range"][0]),
             pd.to_datetime(config["dates_range"][1]) + pd.Timedelta(days=1),
