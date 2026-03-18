@@ -1,0 +1,135 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: flights
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceAccountName: flights
+  imagePullSecrets:
+    - name: ghcr-docker-secret
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: {{ .Values.storage.size }}
+
+  entrypoint: main
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: crawl-wair
+            template: flights-run
+            arguments:
+              parameters:
+                - name: args
+                  value: "crawl wair"
+
+          - name: crawl-rair
+            template: flights-run
+            arguments:
+              parameters:
+                - name: args
+                  value: "crawl rair"
+
+          - name: upload-wair
+            template: upload
+            dependencies: [crawl-wair]
+            arguments:
+              parameters:
+                - name: dir
+                  value: "data"
+
+          - name: upload-rair
+            template: upload
+            dependencies: [crawl-rair]
+            arguments:
+              parameters:
+                - name: dir
+                  value: "data"
+
+          - name: report
+            template: flights-run
+            dependencies: [upload-wair, upload-rair]
+            arguments:
+              parameters:
+                - name: args
+                  value: "report"
+
+          - name: upload-report
+            template: upload
+            dependencies: [report]
+            arguments:
+              parameters:
+                - name: dir
+                  value: "reports"
+
+    - name: flights-run
+      inputs:
+        parameters:
+          - name: args
+      container:
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command: [sh, -c]
+        args:
+          - "flights {{ "{{inputs.parameters.args}}" }}"
+        env:
+          - name: WAIR_DOMAIN
+            valueFrom:
+              secretKeyRef:
+                name: flights-secrets
+                key: wair-domain
+          - name: RAIR_DOMAIN
+            valueFrom:
+              secretKeyRef:
+                name: flights-secrets
+                key: rair-domain
+          - name: FLIGHTS_DATA_DIR
+            value: /mnt/data
+          - name: FLIGHTS_REPORTS_DIR
+            value: /mnt/reports
+        volumeMounts:
+          - name: workspace
+            mountPath: /mnt
+
+    - name: upload
+      inputs:
+        parameters:
+          - name: dir
+      container:
+        image: rclone/rclone:latest
+        command: [rclone]
+        args:
+          - copy
+          - --s3-no-check-bucket
+          - --log-level
+          - DEBUG
+          - "/mnt/{{ "{{inputs.parameters.dir}}" }}"
+          - "r2:{{ .Values.r2.bucket }}/{{ "{{inputs.parameters.dir}}" }}"
+        env:
+          - name: RCLONE_CONFIG_R2_TYPE
+            value: s3
+          - name: RCLONE_CONFIG_R2_PROVIDER
+            value: Cloudflare
+          - name: RCLONE_CONFIG_R2_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: flights-secrets
+                key: r2-access-key
+          - name: RCLONE_CONFIG_R2_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: flights-secrets
+                key: r2-secret-key
+          - name: RCLONE_CONFIG_R2_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: flights-secrets
+                key: r2-endpoint
+        volumeMounts:
+          - name: workspace
+            mountPath: /mnt

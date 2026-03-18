@@ -1,0 +1,23 @@
+image:
+  repository: ghcr.io/iustinam/flights
+  tag: latest
+  # ExternalSecret remote ref for the pull secret (kubernetes.io/dockerconfigjson)
+  pullSecretRemoteRef: /flights/ghcr-docker-secret
+
+schedule: "0 6 * * *"
+timezone: "Europe/Bucharest"
+
+r2:
+  bucket: flights
+
+storage:
+  size: 500Mi
+
+externalSecret:
+  storeName: "infisical" # ClusterSecretStore name
+  remoteRefs:
+    wairDomain: /flights/wair-domain
+    rairDomain: /flights/rair-domain
+    r2AccessKey: /flights/r2-access-key
+    r2SecretKey: /flights/r2-secret-key
+    r2Endpoint: /flights/r2-endpoint

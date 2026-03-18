@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: flights
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedules:
+    - {{ .Values.schedule | quote }}
+  timezone: {{ .Values.timezone | quote }}
+  concurrencyPolicy: Forbid
+  workflowSpec:
+    workflowTemplateRef:
+      name: flights

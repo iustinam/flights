@@ -1,4 +1,5 @@
 .env
+.vscode/
 **/crawl1.py
 data/history/
 thk*
