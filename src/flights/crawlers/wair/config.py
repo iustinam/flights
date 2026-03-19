@@ -48,6 +48,13 @@ src_dsts = [
         ],
     },
 ]
+src_dsts = [
+    {
+        "srcs": ["OTP"],
+        "dsts": ["LCA","MLA"] 
+        #,"BLL","CPH","SDR","BCN","SVQ","MAD","VLC"],
+    },
+]
 # fmt: on
 
 src_dst_pairs = list(
@@ -64,7 +71,7 @@ RETURN_DAYS_DIFF = 7
 DBG = 0
 
 CONFIG = {
-    "days_to_query": range(7, 3 * 30, 15),  # 3 months
+    "days_to_query": range(7, 1 * 30, 15),  # 1 month
     "src_dst_pairs": src_dst_pairs,
     "src_dsts": src_dsts,
 }

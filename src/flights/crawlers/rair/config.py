@@ -44,6 +44,13 @@ src_dsts = [
         ],
     },
 ]
+src_dsts = [
+    {
+        "srcs": ["OTP"],  
+        "dsts": ["BER","PMO","BRS"] 
+        #,"MLA","DUB","JMK","PEG","CTA","BGY"],  
+    }
+]
 # fmt: on
 
 src_dst_pairs = list(
@@ -56,7 +63,7 @@ src_dst_pairs += [(dst, src) for src, dst in src_dst_pairs]
 DBG = 0
 
 CONFIG = {
-    "days_to_query": range(7, 3 * 30, 30),  # 3 months
+    "days_to_query": range(7, 1 * 30, 30),  # 1 month
     "src_dst_pairs": src_dst_pairs,
     "src_dsts": src_dsts,
 }
