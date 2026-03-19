@@ -20,6 +20,7 @@ def main() -> None:
         level=getattr(logging, global_args.log_level),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
 
     # ---- Commands parser ----
     parser = argparse.ArgumentParser(prog="flights", parents=[global_parser])

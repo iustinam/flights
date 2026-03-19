@@ -23,10 +23,12 @@ def run(config: dict) -> None:
     dates = []
 
     for src, dst in config["src_dst_pairs"]:
-        for days_diff in config["days_to_query"]:
-            logger.debug(f"{src}/{dst}")
+        logger.info(f"{src}/{dst}")
 
+        for days_diff in config["days_to_query"]:
+            # logger.debug(f"{src}/{dst}: querying {days_diff} days from now")
             qdate = (DATETIME_NOW + timedelta(days=days_diff)).strftime("%Y-%m-%d")
+            logger.debug(f"{src}/{dst}: querying {qdate}")
             url = FLIGHTS_URL_TPL.format(f"{src}/{dst}", qdate)
 
             resp = None
@@ -59,8 +61,6 @@ def run(config: dict) -> None:
                     f"{src} -> {dst} ({qdate}) |"
                     f" resp={resp.text if resp else 'no response'}"
                 )
-
-            print(".", end="", flush=True)
 
     joblib.dump(dates, DATA_FPATH)
     joblib.dump(dates, DATA_FPATH_HISTORY)

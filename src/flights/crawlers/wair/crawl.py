@@ -52,11 +52,14 @@ def run(config: dict) -> None:
     dates: list[dict] = []
 
     for src, dst in config["src_dst_pairs"]:
+        logger.info(f"{src}/{dst}")
         for day in config["days_to_query"]:
             out_date = (DATETIME_NOW + timedelta(days=day)).strftime("%Y-%m-%d")
             ret_date = (DATETIME_NOW + timedelta(days=day + RETURN_DAYS_DIFF)).strftime(
                 "%Y-%m-%d"
             )
+            logger.debug(f"{src}/{dst}: querying {out_date} > {ret_date}")
+
             req_data = {
                 **REQ_DATA,
                 "flightList": [
@@ -90,8 +93,6 @@ def run(config: dict) -> None:
                     f"{src} -> {dst} ({out_date} > {ret_date}) |"
                     f" resp={resp.text if resp else 'no response'}"
                 )
-
-            print(".", end="", flush=True)
 
     joblib.dump(dates, DATA_FPATH)
     joblib.dump(dates, DATA_FPATH_HISTORY)
