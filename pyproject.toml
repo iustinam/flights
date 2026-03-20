@@ -12,7 +12,8 @@ dependencies = [
     "requests", 
     "pandas", 
     "jinja2", 
-    "joblib"
+    "joblib",
+    "prometheus_client",
 ]
 
 [project.optional-dependencies]

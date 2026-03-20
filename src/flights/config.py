@@ -16,6 +16,7 @@ DATA_DIR = Path(os.environ.get("FLIGHTS_DATA_DIR", PROJECT_ROOT / "data"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 (DATA_DIR / "history").mkdir(exist_ok=True)
 OPERATORS = ["rair", "wair"]
+PUSHGATEWAY_URL = os.environ.get("PUSHGATEWAY_URL", "")
 
 
 def merge_config(

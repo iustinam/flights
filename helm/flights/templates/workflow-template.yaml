@@ -68,6 +68,36 @@ spec:
                 - name: dir
                   value: "reports"
 
+          - name: push-metric-crawl-wair
+            template: push-metric
+            dependencies: [upload-wair]
+            arguments:
+              parameters:
+                - name: metric
+                  value: "flights_upload_last_success_timestamp"
+                - name: object
+                  value: "crawl-wair"
+
+          - name: push-metric-crawl-rair
+            template: push-metric
+            dependencies: [upload-rair]
+            arguments:
+              parameters:
+                - name: metric
+                  value: "flights_upload_last_success_timestamp"
+                - name: object
+                  value: "crawl-rair"
+
+          - name: push-metric-report-all
+            template: push-metric
+            dependencies: [upload-report]
+            arguments:
+              parameters:
+                - name: metric
+                  value: "flights_upload_last_success_timestamp"
+                - name: object
+                  value: "report-all"
+
     - name: flights-run
       inputs:
         parameters:
@@ -133,3 +163,18 @@ spec:
         volumeMounts:
           - name: workspace
             mountPath: /mnt
+
+    - name: push-metric
+      inputs:
+        parameters:
+          - name: metric
+          - name: object
+      container:
+        image: curlimages/curl:latest
+        command: [sh, -c]
+        args:
+          - |
+            echo "{{ "{{inputs.parameters.metric}}" }} $(date +%s)" | \
+            curl --data-binary @- \
+            {{ .Values.pushgatewayUrl }}:9091/metrics/job/flights/object/{{ "{{inputs.parameters.object}}" }}
+

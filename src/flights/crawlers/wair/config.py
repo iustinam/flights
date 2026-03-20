@@ -4,13 +4,15 @@ from pathlib import Path
 
 from flights.config import DATA_DIR, DATETIME_NOW_STR
 
-SITE = "wair"
+OPERATOR = "wair"
 if "WAIR_DOMAIN" not in os.environ:
     raise RuntimeError("WAIR_DOMAIN environment variable is not set")
 WAIR_DOMAIN = os.environ["WAIR_DOMAIN"]
 
-DATA_FPATH = Path(DATA_DIR / f"{SITE}.joblib")
-DATA_FPATH_HISTORY = Path(DATA_DIR / "history" / f"{SITE}_{DATETIME_NOW_STR}.joblib")
+DATA_FPATH = Path(DATA_DIR / f"{OPERATOR}.joblib")
+DATA_FPATH_HISTORY = Path(
+    DATA_DIR / "history" / f"{OPERATOR}_{DATETIME_NOW_STR}.joblib"
+)
 
 # fmt: off
 src_dsts = [

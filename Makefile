@@ -39,5 +39,6 @@ serve-site:
 	$(PYTHON) -m mkdocs serve
 
 check: format-check lint type
+fix: format lint-fix
 ci: install check report-default build-site
 local-run: report-default build-site serve-site

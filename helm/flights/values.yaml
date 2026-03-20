@@ -21,3 +21,5 @@ externalSecret:
     r2AccessKey: /flights/r2-access-key
     r2SecretKey: /flights/r2-secret-key
     r2Endpoint: /flights/r2-endpoint
+
+pushgatewayUrl: http://pushgateway.monitoring.svc.cluster.local

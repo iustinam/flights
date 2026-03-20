@@ -41,9 +41,7 @@ Development:
 - first time / on dependencies change: `make install`
 - iterate
 ```sh
-make format
 make check
-make lint-fix
-make type
+make fix
 make local-run
 ```
