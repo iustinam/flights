@@ -1,7 +1,6 @@
 FROM python:3.12-slim
 
-ENV FLIGHTS_DATA_DIR=/mnt/data \
-    FLIGHTS_REPORT_DIR=/mnt/reports
+ENV FLIGHTS_BASE_DIR=/mnt/
 
 WORKDIR /app
 

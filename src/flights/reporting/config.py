@@ -1,10 +1,9 @@
-import os
 from copy import deepcopy
 from pathlib import Path
 
 import pandas as pd
 
-from flights.config import PROJECT_ROOT
+from flights.config import FLIGHTS_BASE_DIR
 
 CONFIG = {
     "name": "default",
@@ -18,15 +17,13 @@ CONFIG = {
 }
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
-REPORTS_DIR = Path(os.environ.get("FLIGHTS_REPORT_DIR", PROJECT_ROOT / "reports"))
+REPORTS_DIR = FLIGHTS_BASE_DIR / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 # REPORT_FILE_TPL = f"{REPORTS_DIR}/flights__{{dates}}__{{max_price}}__{{nights}}.md"
 REPORT_FILE_TPL = f"{REPORTS_DIR}/flights-{{name}}.md"
 TEMPLATE_FILE = "report.md.j2"
 
-MKDOCS_REPORTS_DIR = Path(
-    os.environ.get("FLIGHTS_REPORT_DIR", PROJECT_ROOT / "docs" / "reports")
-)
+MKDOCS_REPORTS_DIR = FLIGHTS_BASE_DIR / "docs" / "reports"
 MKDOCS_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 MKDOCS_REPORT_FILE_TPL = f"{MKDOCS_REPORTS_DIR}/flights-{{name}}.md"
 MKDOCS_TEMPLATE_FILE = "report-mkdocs.md.j2"

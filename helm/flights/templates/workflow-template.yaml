@@ -118,10 +118,8 @@ spec:
               secretKeyRef:
                 name: flights-secrets
                 key: rair-domain
-          - name: FLIGHTS_DATA_DIR
-            value: /mnt/data
-          - name: FLIGHTS_REPORTS_DIR
-            value: /mnt/reports
+          - name: FLIGHTS_BASE_DIR
+            value: /mnt
         volumeMounts:
           - name: workspace
             mountPath: /mnt

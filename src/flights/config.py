@@ -11,8 +11,10 @@ DATETIME_NOW = datetime.now()
 DATETIME_NOW_STR = DATETIME_NOW.strftime("%Y.%m.%d_%H.%M.%S")
 EUR_RON_RATE = 5.1
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = Path(os.environ.get("FLIGHTS_DATA_DIR", PROJECT_ROOT / "data"))
+FLIGHTS_BASE_DIR = Path(
+    os.environ.get("FLIGHTS_BASE_DIR", Path(__file__).resolve().parents[2])
+)
+DATA_DIR = FLIGHTS_BASE_DIR / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 (DATA_DIR / "history").mkdir(exist_ok=True)
 OPERATORS = ["rair", "wair"]
