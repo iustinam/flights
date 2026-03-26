@@ -28,20 +28,6 @@ roleRef:
   name: flights-executor
   apiGroup: rbac.authorization.k8s.io
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: flights-executor
-  namespace: {{ .Release.Namespace }}
-subjects:
-  - kind: ServiceAccount
-    name: flights
-    namespace: {{ .Release.Namespace }}
-roleRef:
-  kind: Role
-  name: flights-executor
-  apiGroup: rbac.authorization.k8s.io
----
 # what the Argo Controller SA needs in this namespace beyond its ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
